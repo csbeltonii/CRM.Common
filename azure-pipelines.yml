@@ -9,7 +9,7 @@ trigger:
 pool:
   vmImage: 'windows-latest'
 
-name: $(Date:yyyyMMdd).$(Build.BuildId).$(Rev:r)
+name: 1.$(Build.BuildId).$(Rev:r)
 
 variables:
   solution: '**/*.sln'
