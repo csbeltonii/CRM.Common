@@ -22,10 +22,10 @@ public class BaseRepository<TEntity> : IRepository<TEntity>
               .ConfigureAwait(false);
     }
 
-    public async Task<TEntity?> Get(string id, string partitionKey, CancellationToken cancellationToken)
+    public async Task<TEntity> Get(string id, string partitionKey, CancellationToken cancellationToken)
     {
         var entity = await _container
-              .ReadItemAsync<TEntity?>(id, new PartitionKey(partitionKey), cancellationToken: cancellationToken)
+              .ReadItemAsync<TEntity>(id, new PartitionKey(partitionKey), cancellationToken: cancellationToken)
               .ConfigureAwait(false);
 
         return entity.Resource;
@@ -44,6 +44,23 @@ public class BaseRepository<TEntity> : IRepository<TEntity>
                                        .ConfigureAwait(false);
 
             results.AddRange(result.ToList());
+        }
+
+        return results;
+    }
+
+    public async Task<IEnumerable<TEntity>> Get(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken)
+    {
+        var results = new List<TEntity>();
+
+        var iterator = _container
+                       .GetItemLinqQueryable<TEntity>()
+                       .Where(predicate)
+                       .ToFeedIterator();
+
+        while (iterator.HasMoreResults)
+        {
+            results.AddRange(await iterator.ReadNextAsync(cancellationToken));
         }
 
         return results;
@@ -70,7 +87,7 @@ public class BaseRepository<TEntity> : IRepository<TEntity>
         return results;
     }
 
-    public async Task<TEntity?> Update(TEntity entity, string etag, string partitionKey, CancellationToken cancellationToken)
+    public async Task<TEntity> Update(TEntity entity, string etag, string partitionKey, CancellationToken cancellationToken)
     {
         try
         {
