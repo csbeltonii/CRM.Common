@@ -1,5 +1,7 @@
-﻿using System.Net;
+﻿using System.Linq.Expressions;
+using System.Net;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Azure.Cosmos.Linq;
 
 namespace Common.Repositories;
 
@@ -46,7 +48,28 @@ public class BaseRepository<TEntity> : IRepository<TEntity>
 
         return results;
     }
-    
+
+    public async Task<IEnumerable<TEntityDto>> Get<TEntityDto>(
+        Expression<Func<TEntity, bool>> predicate, 
+        Expression<Func<TEntity, TEntityDto>> selector,
+        CancellationToken cancellationToken)
+    {
+        var results = new List<TEntityDto>();
+
+        var iterator = _container
+                       .GetItemLinqQueryable<TEntity>()
+                       .Where(predicate)
+                       .Select(selector)
+                       .ToFeedIterator();
+
+        while (iterator.HasMoreResults)
+        {
+            results.AddRange(await iterator.ReadNextAsync(cancellationToken));
+        }
+
+        return results;
+    }
+
     public async Task<TEntity?> Update(TEntity entity, string etag, string partitionKey, CancellationToken cancellationToken)
     {
         try
