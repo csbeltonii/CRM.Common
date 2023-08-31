@@ -8,5 +8,5 @@ public class DatabaseSettings
     public string OrderItemContainerName { get; set; }
     public string ProductContainerName { get; set; }
     public string InventoryContainerName { get; set; }
-    
+    public string OrganizationContainerName { get; set; }
 }
