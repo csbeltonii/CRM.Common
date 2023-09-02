@@ -10,9 +10,9 @@ namespace Common.Controllers
             return base.Ok();
         }
 
-        protected IActionResult CreatedAtAction<T>(string? actionName,
-                                                    object? routeValue,
-                                                    T? value)
+        protected IActionResult CreatedAtAction<T>(string actionName,
+                                                    object routeValue,
+                                                    T value)
         {
             return base.CreatedAtAction(actionName, routeValue, Package.Ok(value));
 

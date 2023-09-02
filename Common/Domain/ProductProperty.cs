@@ -1,4 +1,4 @@
-﻿namespace Domain.Model;
+﻿namespace Common.Domain;
 
 public class ProductProperty
 {

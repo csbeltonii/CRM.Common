@@ -11,7 +11,7 @@ public class FeatureFlagSetting
         Value = value;
     }
 
-    public override bool Equals(object? obj)
+    public override bool Equals(object obj)
     {
         if (obj is not FeatureFlagSetting setting)
         {
