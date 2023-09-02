@@ -9,7 +9,7 @@ trigger:
 pool:
   vmImage: 'windows-latest'
 
-name: 1.$(Rev:r).$(Build.BuildId)
+name: 2.$(Rev:r).$(Build.BuildId)
 
 variables:
   solution: '**/*.sln'
@@ -18,12 +18,15 @@ variables:
 
 steps:
 - task: NuGetToolInstaller@1
+  displayName: Install NuGet
 
 - task: NuGetCommand@2
+  displayName: NuGet Restore
   inputs:
     restoreSolution: '$(solution)'
 
 - task: VSBuild@1
+  displayName: Build
   inputs:
     solution: '$(solution)'
     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
@@ -31,17 +34,20 @@ steps:
     configuration: '$(buildConfiguration)'
 
 - task: VSTest@2
+  displayName: Test
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
+  displayName: NuGet Pack
   inputs:
     command: 'pack'
     packagesToPack: '**/*.csproj'
     versioningScheme: 'byBuildNumber'
 
 - task: DotNetCoreCLI@2
+  displayName: NuGetPush
   inputs:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
