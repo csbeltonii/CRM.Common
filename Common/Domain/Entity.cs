@@ -8,8 +8,8 @@ public abstract class Entity
     public string OrganizationId { get; set; }
     public DateTime CreatedDate { get; }
     public string CreatedBy { get; }
-    public DateTime LastUpdated { get; private set; }
-    public string UpdatedBy { get; private set; }
+    public DateTime LastUpdated { get; set; }
+    public string UpdatedBy { get; set; }
 
     [JsonProperty("_etag")]
     public string Etag { get; set; }
