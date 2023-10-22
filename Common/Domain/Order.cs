@@ -9,21 +9,14 @@ public class Order : Entity, IOrganizationEntity
 
     public string CustomerId { get; set; }
     public string OrganizationId { get; set; }
-    public ICollection<OrderItem> OrderItems  { get; set; }
     public OrderStatus Status { get; set; }
     public bool IsShipped { get; set; }
-    public decimal Tax { get; set; }
-    public decimal Total => OrderItems.Sum(item => item.Price);
 
-    private Order(string userId) : base(userId)
-    {
-        OrderItems = new HashSet<OrderItem>();
-    }
+    private Order(string userId) : base(userId) { }
 
     public Order(string id, string customerId, string userId) : base(userId)
     {
         Id = id;
         CustomerId = customerId;
-        OrderItems = new HashSet<OrderItem>();
     }
 }
