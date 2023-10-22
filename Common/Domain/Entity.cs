@@ -1,11 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using Common.Interfaces;
+using Microsoft.Azure.Cosmos;
+using Newtonsoft.Json;
 
 namespace Common.Domain;
 
-public abstract class Entity
+public abstract class Entity : IAudit
 {
     public string Id { get; set; }
-    public string OrganizationId { get; set; }
     public DateTime CreatedDate { get; set;  }
     public string CreatedBy { get; }
     public DateTime LastUpdated { get; set; }
@@ -18,4 +19,6 @@ public abstract class Entity
     {
         CreatedBy = userId;
     }
+
+    public PartitionKey PartitionKey => new(Id);
 }

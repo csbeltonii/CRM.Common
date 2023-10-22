@@ -1,10 +1,20 @@
-﻿namespace Common.Domain;
+﻿using Common.Interfaces;
 
-public class Product : Entity
+namespace Common.Domain;
+
+public class ProductProperty
+{
+    public string Name { get; set; }
+    public string Value { get; set; }
+    public string Type { get; set; }
+}
+
+public class Product : Entity, IOrganizationEntity
 {
     public static Product Null => new("");
 
     public decimal Price { get; set; }
+    public string OrganizationId { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
     public bool IsActive { get; set; }

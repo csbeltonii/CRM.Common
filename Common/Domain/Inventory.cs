@@ -1,9 +1,12 @@
-﻿namespace Common.Domain;
+﻿using Common.Interfaces;
 
-public class Inventory : Entity
+namespace Common.Domain;
+
+public class Inventory : Entity, IOrganizationEntity
 {
     public static Inventory Null => new("");
 
+    public string OrganizationId { get; set; }
     public string ProductId { get; set; }
     public decimal QuantityOnHand { get; set; }
 

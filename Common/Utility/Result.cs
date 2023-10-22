@@ -56,33 +56,20 @@ public class Result<T> : Result
 
 public class HttpResult<T> : Result<T>
 {
-    private readonly HttpStatusCode _statusCode;
-
-    public HttpStatusCode StatusCode
-    {
-        get
-        {
-            return _statusCode;
-        }
-    }
+    public HttpStatusCode StatusCode { get; }
 
     protected internal HttpResult(T result, HttpStatusCode statusCode, bool isSuccess, string errorMessage) : base(result, isSuccess, errorMessage)
     {
-        _statusCode = statusCode;
+        StatusCode = statusCode;
     }
 }
 
 public class HttpResult : Result
 {
-    private readonly HttpStatusCode _statusCode;
-
-    public HttpStatusCode StatusCode
-    {
-        get => _statusCode;
-    }
+    public HttpStatusCode StatusCode { get; }
 
     protected internal HttpResult(HttpStatusCode statusCode, bool isSuccess, string errorMessage) : base(isSuccess, errorMessage)
     {
-        _statusCode = statusCode;
+        StatusCode = statusCode;
     }
 }

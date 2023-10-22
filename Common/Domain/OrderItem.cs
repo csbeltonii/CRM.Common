@@ -1,11 +1,14 @@
-﻿namespace Common.Domain;
+﻿using Common.Interfaces;
 
-public class OrderItem : Entity
+namespace Common.Domain;
+
+public class OrderItem : Entity, IOrganizationEntity
 {
     public static OrderItem Null => new("");
 
     public string Name { get; set; }
     public string OrderId { get; set; }
+    public string OrganizationId { get; set; }
     public decimal Price { get; set; }
     public decimal Quantity { get; set; }
 

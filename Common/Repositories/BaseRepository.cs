@@ -1,12 +1,13 @@
 ﻿using System.Linq.Expressions;
 using System.Net;
+using Common.Domain;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
 
 namespace Common.Repositories;
 
 public class BaseRepository<TEntity> : IRepository<TEntity>
-    where TEntity : class
+    where TEntity : Entity
 {
     protected readonly Container _container;
 
@@ -15,12 +16,10 @@ public class BaseRepository<TEntity> : IRepository<TEntity>
         _container = cosmosClient.GetContainer(databaseName, containerName);
     }
 
-    public async Task<TEntity> Create(TEntity entity, string partitionKey, CancellationToken cancellationToken)
-    {
-        return await _container
-              .CreateItemAsync(entity, new PartitionKey(partitionKey), cancellationToken: cancellationToken)
+    public async Task<TEntity> Create(TEntity entity, CancellationToken cancellationToken) =>
+        await _container
+              .CreateItemAsync(entity, entity.PartitionKey, cancellationToken: cancellationToken)
               .ConfigureAwait(false);
-    }
 
     public async Task<TEntity> Get(string id, string partitionKey, CancellationToken cancellationToken)
     {
@@ -87,7 +86,7 @@ public class BaseRepository<TEntity> : IRepository<TEntity>
         return results;
     }
 
-    public async Task<TEntity> Update(TEntity entity, string etag, string partitionKey, CancellationToken cancellationToken)
+    public async Task<TEntity> Update(TEntity entity, string etag, CancellationToken cancellationToken)
     {
         try
         {
@@ -95,8 +94,8 @@ public class BaseRepository<TEntity> : IRepository<TEntity>
             {
                 IfMatchEtag = etag
             };
-            var key = new PartitionKey(partitionKey);
-            var response = await _container.UpsertItemAsync(entity, key, options, cancellationToken)
+
+            var response = await _container.UpsertItemAsync(entity, entity.PartitionKey, options, cancellationToken)
                                            .ConfigureAwait(false);
 
             return response.Resource;
@@ -112,9 +111,7 @@ public class BaseRepository<TEntity> : IRepository<TEntity>
     {
         try
         {
-            var key = new PartitionKey(partitionKey);
-
-            await _container.DeleteItemAsync<TEntity>(id, key, cancellationToken: cancellationToken)
+            await _container.DeleteItemAsync<TEntity>(id, new PartitionKey(partitionKey), cancellationToken: cancellationToken)
                             .ConfigureAwait(false);
 
             return true;

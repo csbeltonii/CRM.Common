@@ -1,11 +1,16 @@
-﻿namespace Common.Domain;
+﻿using Common.Enums;
+using Common.Interfaces;
 
-public class Order : Entity
+namespace Common.Domain;
+
+public class Order : Entity, IOrganizationEntity
 {
     public static Order Null => new("");
 
     public string CustomerId { get; set; }
+    public string OrganizationId { get; set; }
     public ICollection<OrderItem> OrderItems  { get; set; }
+    public OrderStatus Status { get; set; }
     public bool IsShipped { get; set; }
     public decimal Tax { get; set; }
     public decimal Total => OrderItems.Sum(item => item.Price);
